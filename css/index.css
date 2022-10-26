@@ -86,6 +86,7 @@ img {
 }
 
 .load-more {
+  box-sizing: content-box;
   margin-top: 20px;
   margin-left: 50%;
   transform: translate(-50%);
