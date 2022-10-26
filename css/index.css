@@ -66,6 +66,13 @@ img {
   }
 }
 
+.load-more {
+  margin-top: 20px;
+  margin-left: 50%;
+  transform: translate(-50%);
+  margin-bottom: 30px;
+}
+
 .search-form {
   padding-top: 10px;
   padding-bottom: 10px;
