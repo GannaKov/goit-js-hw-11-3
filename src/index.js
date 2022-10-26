@@ -26,7 +26,7 @@ let totalHitsPhotos;
 let inputValue = '';
 
 const optionsNotify = {
-  position: 'center-center',
+  position: 'center-bottom',
   showOnlyTheLastOne: true,
   timeout: 4000,
 };
@@ -45,9 +45,6 @@ function onFormSubmit(evt) {
   evt.preventDefault();
   refs.loadMoreBtnEl.setAttribute('hidden', true);
 
-  // window.scrollBy({
-  //   behavior: 'auto',
-  // });
   window.scrollTo(top);
   page = 1;
 
@@ -76,6 +73,7 @@ function onFormSubmit(evt) {
         );
         return;
       }
+
       refs.loadMoreBtnEl.removeAttribute('hidden');
       totalPage = Math.ceil(response.data.totalHits / perPage);
       totalHitsPhotos = response.data.totalHits;
@@ -87,6 +85,13 @@ function onFormSubmit(evt) {
       refs.galleryEl.insertAdjacentHTML('beforeend', imgMarkUp);
 
       lightbox.refresh();
+      if (response.data.totalHits <= perPage) {
+        refs.loadMoreBtnEl.setAttribute('hidden', true);
+        Notify.warning(
+          'We are sorry, but you have reached the end of search results.',
+          optionsNotify
+        );
+      }
     })
     .catch(error => console.log(error));
 }
@@ -97,16 +102,8 @@ function onLoad() {
   }
 
   page += 1;
-  if (totalHitsPhotos > 0 && page > totalPage) {
-    refs.loadMoreBtnEl.setAttribute('hidden', true);
-    Notify.warning(
-      'We are sorry, but you have reached the end of search results.',
-      optionsNotify
-    );
-    // observer.unobserve(refs.guardEl);
-    return;
-  }
-
+  console.log(page);
+  console.log(totalPage);
   fetchPhotos(inputValue, perPage, page).then(response => {
     const imgMarkUp = createSmallImgMarkup(response.data.hits);
     refs.galleryEl.insertAdjacentHTML('beforeend', imgMarkUp);
@@ -120,4 +117,15 @@ function onLoad() {
     //*************************************
     lightbox.refresh();
   });
+
+  if (totalHitsPhotos > 0 && page >= totalPage) {
+    console.log('Yes');
+    refs.loadMoreBtnEl.setAttribute('hidden', true);
+    Notify.warning(
+      'We are sorry, but you have reached the end of search results.',
+      optionsNotify
+    );
+
+    return;
+  }
 }
